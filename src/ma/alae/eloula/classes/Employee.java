@@ -7,6 +7,14 @@ public class Employee extends Personel{
     private String email;
     private LocalDate dateRecrutement;
 
+    public Employee(Integer id, String nom, String prenom, LocalDate dateNaissance, String tel) {
+        super(id, nom, prenom, dateNaissance, tel);
+    }
+
+    public Employee() {
+        super();
+    }
+
     public String getEmail() {
         return email;
     }

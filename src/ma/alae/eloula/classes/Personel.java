@@ -10,6 +10,16 @@ public class Personel {
     private LocalDate dateNaissance;
     private String tel;
 
+    public Personel(Integer id, String nom, String prenom, LocalDate dateNaissance, String tel) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.dateNaissance = dateNaissance;
+        this.tel = tel;
+    }
+
+    public Personel() {
+    }
 
     public Integer getId() {
         return id;

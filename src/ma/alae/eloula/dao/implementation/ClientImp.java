@@ -79,5 +79,40 @@ public class ClientImp {
         return rowsAffected;
     }
 
+   // @Override
+    public Optional<Client> rechercherClient(int clientId) {
+        Optional<Client> clientFound = Optional.empty();
+        try {
+            // Créez une requête SQL pour récupérer les informations du client en fonction de son ID
+            String sql = "SELECT c.id, c.address, p.nom, p.prenom, p.dateNaissance, p.tel FROM Client c " +
+                    "INNER JOIN Personel p ON c.id = p.id " +
+                    "WHERE c.id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, clientId);
 
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                // Si un client correspondant est trouvé, créez un objet Client avec les informations
+                int id = resultSet.getInt("id");
+                String address = resultSet.getString("address");
+                String nom = resultSet.getString("nom");
+                String prenom = resultSet.getString("prenom");
+                java.sql.Date dateNaissance = resultSet.getDate("dateNaissance");
+                String tel = resultSet.getString("tel");
+
+                // Créez un objet Client
+                Client client = new Client(id, nom, prenom, dateNaissance.toLocalDate(), tel, address);
+
+                clientFound = Optional.of(client);
+            }
+
+            // Assurez-vous de libérer les ressources
+            statement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return clientFound;
+    }
 }

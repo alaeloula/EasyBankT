@@ -4,6 +4,7 @@ import ma.alae.eloula.dao.implementation.ClientImp;
 import ma.alae.eloula.dao.implementation.EmployeImp;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Scanner;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
@@ -36,7 +37,7 @@ public class Main {
         //Employee e1 =new Employee();
         EmployeImp eimp=new EmployeImp();
         ClientImp cimp = new ClientImp();
-        Client c1 =new Client();
+        //
        /* e1.setNom("alae");
         e1.setPrenom("alae");
         e1.setTel("06000000");
@@ -60,20 +61,37 @@ public class Main {
             System.out.println("Date de recrutement : " + employee.getDateRecrutement());
         });*/
         //eimp.SupprimerEmpl(1);
-        c1.setNom("hehe");
+        Client c1 =new Client();
+       c1.setNom("hehe");
         c1.setPrenom("alae");
         c1.setTel("06000000");
         c1.setDateNaissance(LocalDate.parse("2020-03-03"));
         c1.setAddress("fgvhbngfghj");
-        //cimp.ajouterClient(c1);
+        cimp.ajouterClient(c1);
 
-        int rowsDeleted = cimp.supprimerClient(10);;
+        /*int rowsDeleted = cimp.supprimerClient(10);;
         if (rowsDeleted > 0) {
             System.out.println("Client supprimé avec succès.");
         } else {
             System.out.println("Aucun client trouvé avec l'ID " );
-        }
+        }*/
 
+        int clientIdToFind = 1; // Remplacez par l'ID du client que vous souhaitez trouver
+        Optional<Client> client = cimp.rechercherClient(5);
+
+        if (client.isPresent()) {
+            Client foundClient = client.get();
+            // Affichez les détails du client trouvé
+            System.out.println("Client trouvé :");
+            System.out.println("ID : " + foundClient.getId());
+            System.out.println("Nom : " + foundClient.getNom());
+            System.out.println("Prénom : " + foundClient.getPrenom());
+            System.out.println("Date de naissance : " + foundClient.getDateNaissance());
+            System.out.println("Téléphone : " + foundClient.getTel());
+            System.out.println("Adresse : " + foundClient.getAddress());
+        } else {
+            System.out.println("Aucun client trouvé avec l'ID " + clientIdToFind);
+        }
 
 
     }
