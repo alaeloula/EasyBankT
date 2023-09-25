@@ -14,7 +14,7 @@ public class EmployeImp implements Personel {
     public Optional<Employee> ajouterEmployee(Employee employee) {
         Optional<Employee> addedEmployee = Optional.empty();
         try {
-            // Commencez par insérer les données dans la table "Personne"
+            // Commencez par insérer les données dans la table "Personel"
             String personelSql = "INSERT INTO Personel (nom, prenom, dateNaissance, tel) VALUES (?, ?, ?, ?)";
             PreparedStatement personelStatement = connection.prepareStatement(personelSql, Statement.RETURN_GENERATED_KEYS);
             personelStatement.setString(1, employee.getNom());
