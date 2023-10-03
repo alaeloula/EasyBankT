@@ -1,13 +1,14 @@
 package ma.alae.eloula.classes;
+import java.time.LocalDate;
 import java.util.Date;
 public class Compte {
 
-    private Integer numero;
-    private Double solde;
-    private Date dateCreation;
-    private Etat etat;
-    private Client client;
-    private Employee employee;
+    protected Integer numero;
+    protected Double solde;
+    protected LocalDate dateCreation;
+    protected Etat etat;
+    protected Client client;
+    protected Employee employee;
 
     public Integer getNumero() {
         return numero;
@@ -25,11 +26,11 @@ public class Compte {
         this.solde = solde;
     }
 
-    public Date getDateCreation() {
+    public LocalDate getDateCreation() {
         return dateCreation;
     }
 
-    public void setDateCreation(Date dateCreation) {
+    public void setDateCreation(LocalDate dateCreation) {
         this.dateCreation = dateCreation;
     }
 

@@ -1,6 +1,6 @@
 package ma.alae.eloula.classes;
 
-public class CompteEpargne {
+public class CompteEpargne extends Compte{
     private Double tauxInteret;
 
     public Double getTauxInteret() {

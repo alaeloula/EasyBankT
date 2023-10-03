@@ -5,6 +5,15 @@ public class Mission {
     private String nom;
     private String description;
 
+    public Mission() {
+    }
+
+    public Mission(Integer id, String nom, String description) {
+        this.id = id;
+        this.nom = nom;
+        this.description = description;
+    }
+
     public Integer getId() {
         return id;
     }

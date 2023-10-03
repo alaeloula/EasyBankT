@@ -2,13 +2,16 @@ package ma.alae.eloula.dao.implementation;
 
 import connection.SingletonConnection;
 import ma.alae.eloula.classes.Client;
+import ma.alae.eloula.dao.Interfaces.ClientI;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-public class ClientImp {
+public class ClientImp implements ClientI {
     Connection connection = SingletonConnection.getConn();
-    //@Override
+    @Override
     public Optional<Client> ajouterClient(Client client) {
         Optional<Client> addedClient = Optional.empty();
         try {
@@ -79,7 +82,7 @@ public class ClientImp {
         return rowsAffected;
     }
 
-   // @Override
+   @Override
     public Optional<Client> rechercherClient(int clientId) {
         Optional<Client> clientFound = Optional.empty();
         try {
@@ -115,4 +118,125 @@ public class ClientImp {
 
         return clientFound;
     }
+    @Override
+    public Optional<List<Client>> findAllClients() {
+        List<Client> clients = new ArrayList<>();
+
+        try {
+            // Établissez la connexion à la base de données ici (connexion Singleton recommandée)
+
+            String sql = "SELECT * FROM Client JOIN Personel ON Client.id = Personel.id";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Client client = new Client();
+                client.setId(resultSet.getInt("id"));
+                client.setNom(resultSet.getString("nom"));
+                client.setPrenom(resultSet.getString("prenom"));
+                client.setDateNaissance(resultSet.getDate("dateNaissance").toLocalDate());
+                client.setTel(resultSet.getString("tel"));
+                client.setAddress(resultSet.getString("address"));
+
+                clients.add(client);
+            }
+
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return Optional.of(clients);
+    }
+    @Override
+    public Client findClientById(int clientId) {
+        try {
+            String sql = "SELECT C.id, P.nom, P.prenom, P.dateNaissance, P.tel, C.address " +
+                    "FROM Client C " +
+                    "INNER JOIN Personel P ON C.id = P.id " +
+                    "WHERE C.id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, clientId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                Client client = new Client();
+                client.setId(resultSet.getInt("id"));
+                client.setNom(resultSet.getString("nom"));
+                client.setPrenom(resultSet.getString("prenom"));
+                client.setDateNaissance(resultSet.getDate("dateNaissance").toLocalDate());
+                client.setTel(resultSet.getString("tel"));
+                client.setAddress(resultSet.getString("address"));
+                return client;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean modifierClient(Client client) {
+        boolean success = false;
+        Connection connection = null;
+        try {
+            connection = SingletonConnection.getConn();
+            connection.setAutoCommit(false); // Désactiver la validation automatique
+
+            // Étape 1 : Mettre à jour les informations du client dans la table "Personel"
+            String updatePersonelSql = "UPDATE Personel SET nom = ?, prenom = ?, datenaissance = ?, tel = ? WHERE id = ?";
+            PreparedStatement updatePersonelStatement = connection.prepareStatement(updatePersonelSql);
+            updatePersonelStatement.setString(1, client.getNom());
+            updatePersonelStatement.setString(2, client.getPrenom());
+            updatePersonelStatement.setDate(3, Date.valueOf(client.getDateNaissance()));
+            updatePersonelStatement.setString(4, client.getTel());
+            updatePersonelStatement.setInt(5, client.getId());
+
+            int rowsUpdatedPersonel = updatePersonelStatement.executeUpdate();
+
+            // Étape 2 : Mettre à jour l'adresse du client dans la table "Client"
+            String updateClientSql = "UPDATE Client SET address = ? WHERE id = ?";
+            PreparedStatement updateClientStatement = connection.prepareStatement(updateClientSql);
+            updateClientStatement.setString(1, client.getAddress());
+            updateClientStatement.setInt(2, client.getId());
+
+            int rowsUpdatedClient = updateClientStatement.executeUpdate();
+
+            // Si les deux mises à jour ont réussi, validez la transaction
+            if (rowsUpdatedPersonel == 1 && rowsUpdatedClient == 1) {
+                connection.commit();
+                success = true;
+               // System.out.println("Le client a été mis à jour avec succès.");
+            } else {
+                connection.rollback(); // En cas d'échec, annulez la transaction
+                //System.err.println("La mise à jour du client a échoué. Vérifiez l'ID du client.");
+            }
+
+            // Réactivez la validation automatique
+            connection.setAutoCommit(true);
+        } catch (SQLException ex) {
+            if (connection != null) {
+                try {
+                    connection.rollback(); // En cas d'erreur, annulez la transaction
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            ex.printStackTrace();
+            System.err.println("Erreur SQL lors de la mise à jour du client.");
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return success;
+    }
+
+
 }

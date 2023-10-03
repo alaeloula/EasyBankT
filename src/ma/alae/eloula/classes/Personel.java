@@ -4,11 +4,11 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public class Personel {
-    private Integer id;
-    private String nom;
-    private String prenom;
-    private LocalDate dateNaissance;
-    private String tel;
+    protected Integer id;
+    protected String nom;
+    protected String prenom;
+    protected LocalDate dateNaissance;
+    protected String tel;
 
     public Personel(Integer id, String nom, String prenom, LocalDate dateNaissance, String tel) {
         this.id = id;
