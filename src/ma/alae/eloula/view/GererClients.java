@@ -18,7 +18,6 @@ public class GererClients {
     CompteImp compteImp=new CompteImp();
     public GererClients() {
         int choixClient;
-
         do {
             System.out.println("=== Menu de Gestion des Clients ===");
             System.out.println("1. Ajouter un client");
