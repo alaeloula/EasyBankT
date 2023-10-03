@@ -3,7 +3,7 @@ package ma.alae.eloula.dao.Interfaces;
 import ma.alae.eloula.classes.CompteCourant;
 
 public interface CompteCourantI extends Acounte{
-    public int creerCompteCourant(CompteCourant compteCourant, int idClient);
+    public int creerCompteCourant(CompteCourant compteCourant, int idClient,int idEmployee);
     CompteCourant findCompteCourantById(int numeroCompteCourant);
     boolean updateCompteCourantEtCompte(CompteCourant compteCourant);
 }

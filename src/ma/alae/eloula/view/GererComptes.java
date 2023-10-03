@@ -1,9 +1,6 @@
 package ma.alae.eloula.view;
 
-import ma.alae.eloula.classes.Client;
-import ma.alae.eloula.classes.Compte;
-import ma.alae.eloula.classes.CompteCourant;
-import ma.alae.eloula.classes.CompteEpargne;
+import ma.alae.eloula.classes.*;
 import ma.alae.eloula.dao.implementation.*;
 import ma.alae.eloula.helpers.Helper;
 
@@ -136,6 +133,21 @@ public class GererComptes {
                             System.out.println("Solde : " + compte.getSolde());
                             System.out.println("Date de création : " + compte.getDateCreation());
                             System.out.println("État : " + compte.getEtat());
+                            System.out.println("-----------------------");
+                            System.out.println("l employee qui a creer le compte");
+                            EmployeImp eimp=new EmployeImp();
+                            //employeImp.getEmployeeById(compte.getEmployee().getId());
+                            eimp.getEmployeeById(compte.getEmployee().getId()).ifPresent(employee -> {
+                                // Affichez les détails de l'employé trouvé
+                                System.out.println("Employé trouvé :");
+                                System.out.println("ID : " + employee.getId());
+                                System.out.println("Nom : " + employee.getNom());
+                                System.out.println("Prénom : " + employee.getPrenom());
+                                System.out.println("Date de naissance : " + employee.getDateNaissance());
+                                System.out.println("Téléphone : " + employee.getTel());
+                                System.out.println("Email : " + employee.getEmail());
+                                System.out.println("Date de recrutement : " + employee.getDateRecrutement());
+                            });
                             System.out.println();
                         }
                     } else {
@@ -212,45 +224,55 @@ public class GererComptes {
                     cc.creerCompteCourant(ccourant,5);*/
                     System.out.print("Entrez l'ID du client : ");
                     int clientId = scanner.nextInt();
+                    System.out.print("Entrez l'ID du employee : ");
+                    int employeId = scanner.nextInt();
 
                     // Créez une instance de votre classe ClientImp pour rechercher le client
                     ClientImp clientImp = new ClientImp();
                     Optional<Client> clientOptional = clientImp.rechercherClient(clientId);
+                    EmployeImp employeImp = new EmployeImp();
+                     if (employeImp.employeeExists(employeId)){
+                         if (clientOptional.isPresent()) {
+                             // Le client existe, continuez à créer le compte courant
+                             Client client = clientOptional.get();
 
-                    if (clientOptional.isPresent()) {
-                        // Le client existe, continuez à créer le compte courant
-                        Client client = clientOptional.get();
+                             // Création d'un objet CompteCourant
+                             CompteCourant ccourant = new CompteCourant();
 
-                        // Création d'un objet CompteCourant
-                        CompteCourant ccourant = new CompteCourant();
+                             // Demandez à l'utilisateur d'entrer le solde
+                             System.out.print("Entrez le solde du compte courant : ");
+                             double solde = scanner.nextDouble();
+                             ccourant.setSolde(solde);
 
-                        // Demandez à l'utilisateur d'entrer le solde
-                        System.out.print("Entrez le solde du compte courant : ");
-                        double solde = scanner.nextDouble();
-                        ccourant.setSolde(solde);
+                             // Demandez à l'utilisateur d'entrer le découvert
+                             System.out.print("Entrez le découvert autorisé : ");
+                             double decouvert = scanner.nextDouble();
+                             ccourant.setDecouvert(decouvert);
 
-                        // Demandez à l'utilisateur d'entrer le découvert
-                        System.out.print("Entrez le découvert autorisé : ");
-                        double decouvert = scanner.nextDouble();
-                        ccourant.setDecouvert(decouvert);
+                             // Demandez à l'utilisateur d'entrer la date de création
+                             System.out.print("Entrez la date de création (format yyyy-MM-dd) : ");
+                             String dateOfBirth = scanner.next();
+                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                             LocalDate dateOfBirthpars = LocalDate.parse(dateOfBirth, formatter);
+                             ccourant.setDateCreation(dateOfBirthpars);
 
-                        // Demandez à l'utilisateur d'entrer la date de création
-                        System.out.print("Entrez la date de création (format yyyy-MM-dd) : ");
-                        String dateOfBirth = scanner.next();
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                        LocalDate dateOfBirthpars = LocalDate.parse(dateOfBirth, formatter);
-                        ccourant.setDateCreation(dateOfBirthpars);
+                             // Création d'une instance de votre classe CompteCourantImp
+                             //CompteCourantImp cc = new CompteCourantImp();
 
-                        // Création d'une instance de votre classe CompteCourantImp
-                        //CompteCourantImp cc = new CompteCourantImp();
+                             // Appel de la méthode pour créer le compte courant en utilisant l'ID du client
+                             cc.creerCompteCourant(ccourant, client.getId(),employeId);
 
-                        // Appel de la méthode pour créer le compte courant en utilisant l'ID du client
-                        cc.creerCompteCourant(ccourant, client.getId());
+                             System.out.println("Le compte courant a été créé avec succès pour le client : " + client.getNom() + " " + client.getPrenom());
+                         }
 
-                        System.out.println("Le compte courant a été créé avec succès pour le client : " + client.getNom() + " " + client.getPrenom());
-                    } else {
-                        System.out.println("Aucun client trouvé avec l'ID : " + clientId);
-                    }
+                         else {
+                             System.out.println("Aucun client trouvé avec l'ID : " + clientId);
+                         }
+                     }else{
+                         System.out.println("aucun employer avec ce id");
+                     }
+
+
                     break;
                 case 2:
                     // Créer un compte épargne
@@ -267,45 +289,52 @@ public class GererComptes {
                     ceimp.creerCompteEpargne(ce,5);*/
                     System.out.print("Entrez l'ID du client : ");
                     int clId = scanner.nextInt();
-
+                    System.out.print("Entrez l'ID du employee : ");
+                    employeId = scanner.nextInt();
+                    EmployeImp empImp = new EmployeImp();
                     // Créez une instance de votre classe ClientImp pour rechercher le client
                     ClientImp clientImpp = new ClientImp();
                     Optional<Client> clientOptionale = clientImpp.rechercherClient(clId);
+                    if (empImp.employeeExists(employeId)){
+                        if (clientOptionale.isPresent()) {
+                            // Le client existe, continuez à créer le compte épargne
+                            Client client = clientOptionale.get();
 
-                    if (clientOptionale.isPresent()) {
-                        // Le client existe, continuez à créer le compte épargne
-                        Client client = clientOptionale.get();
+                            // Création d'un objet CompteEpargne
+                            CompteEpargne ce = new CompteEpargne();
 
-                        // Création d'un objet CompteEpargne
-                        CompteEpargne ce = new CompteEpargne();
+                            // Demandez à l'utilisateur d'entrer le solde
+                            System.out.print("Entrez le solde du compte épargne : ");
+                            double solde = scanner.nextDouble();
+                            ce.setSolde(solde);
 
-                        // Demandez à l'utilisateur d'entrer le solde
-                        System.out.print("Entrez le solde du compte épargne : ");
-                        double solde = scanner.nextDouble();
-                        ce.setSolde(solde);
+                            // Demandez à l'utilisateur d'entrer le taux d'intérêt
+                            System.out.print("Entrez le taux d'intérêt : ");
+                            double tauxInteret = scanner.nextDouble();
+                            ce.setTauxInteret(tauxInteret);
 
-                        // Demandez à l'utilisateur d'entrer le taux d'intérêt
-                        System.out.print("Entrez le taux d'intérêt : ");
-                        double tauxInteret = scanner.nextDouble();
-                        ce.setTauxInteret(tauxInteret);
+                            // Demandez à l'utilisateur d'entrer la date de création
+                            System.out.print("Entrez la date de création (format yyyy-MM-dd) : ");
+                            String dateOfBirth = scanner.next();
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                            LocalDate dateOfBirthpars = LocalDate.parse(dateOfBirth, formatter);
+                            ce.setDateCreation(dateOfBirthpars);
 
-                        // Demandez à l'utilisateur d'entrer la date de création
-                        System.out.print("Entrez la date de création (format yyyy-MM-dd) : ");
-                        String dateOfBirth = scanner.next();
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                        LocalDate dateOfBirthpars = LocalDate.parse(dateOfBirth, formatter);
-                        ce.setDateCreation(dateOfBirthpars);
+                            // Création d'une instance de votre classe CompteEpargneImp
+                            //CompteEpargneImp ceimp = new CompteEpargneImp();
 
-                        // Création d'une instance de votre classe CompteEpargneImp
-                        //CompteEpargneImp ceimp = new CompteEpargneImp();
+                            // Appel de la méthode pour créer le compte épargne en utilisant l'ID du client
+                            ceimp.creerCompteEpargne(ce, client.getId(),employeId);
 
-                        // Appel de la méthode pour créer le compte épargne en utilisant l'ID du client
-                        ceimp.creerCompteEpargne(ce, client.getId());
+                            System.out.println("Le compte épargne a été créé avec succès pour le client : " + client.getNom() + " " + client.getPrenom());
+                        }
+                        else {
+                            System.out.println("Aucun client trouvé avec l'ID : " + clId);
+                        }
+                    }else {
 
-                        System.out.println("Le compte épargne a été créé avec succès pour le client : " + client.getNom() + " " + client.getPrenom());
-                    } else {
-                        System.out.println("Aucun client trouvé avec l'ID : " + clId);
                     }
+
                     break;
                 case 0:
                     System.out.println("Retour au menu précédent.");

@@ -7,7 +7,9 @@ public class Compte {
     protected Double solde;
     protected LocalDate dateCreation;
     protected Etat etat;
+
     protected Client client;
+
     protected Employee employee;
 
     public Integer getNumero() {
@@ -40,5 +42,9 @@ public class Compte {
 
     public void setEtat(Etat etat) {
         this.etat = etat;
+    }
+
+    public Employee getEmployee() {
+        return employee;
     }
 }

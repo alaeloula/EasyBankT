@@ -12,16 +12,17 @@ import java.sql.SQLException;
 
 public class CompteCourantimp extends CompteImp implements CompteCourantI {
     Connection connection = SingletonConnection.getConn();
-    public int creerCompteCourant(CompteCourant compteCourant, int idClient) {
+    public int creerCompteCourant(CompteCourant compteCourant, int idClient,int idEmployee) {
         int numeroCompteCourant = -1; // Par défaut, retournez -1 en cas d'échec
         try {
             // Commencez par insérer les informations du compte dans la table "Compte"
-            String compteSql = "INSERT INTO Compte (solde, dateCreation, etat, id_cl) VALUES (?, ?, ?, ?)";
+            String compteSql = "INSERT INTO Compte (solde, dateCreation, etat, id_cl,id_employee) VALUES (?, ?, ?, ?,?)";
             PreparedStatement compteStatement = connection.prepareStatement(compteSql, PreparedStatement.RETURN_GENERATED_KEYS);
             compteStatement.setDouble(1, compteCourant.getSolde());
             compteStatement.setObject(2, compteCourant.getDateCreation());
             compteStatement.setString(3, "ACTIF"); // État par défaut
             compteStatement.setInt(4, idClient); // ID du client
+            compteStatement.setInt(5, idEmployee); // ID du employe
 
             int rowsAffected = compteStatement.executeUpdate();
 

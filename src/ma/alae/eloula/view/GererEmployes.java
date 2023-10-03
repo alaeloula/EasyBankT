@@ -83,6 +83,7 @@ public class GererEmployes {
                     } else {
                         System.err.println("Erreur lors de l'ajout de l'employé.");
                     }
+                    break;
                 case 2:
                     // Supprimer un employé
                     // Ajoutez ici votre logique pour supprimer un employé

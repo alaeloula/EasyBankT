@@ -13,16 +13,17 @@ import java.sql.SQLException;
 
 public class CompteEpargneImp extends CompteImp implements CompteEpargneI {
     Connection connection = SingletonConnection.getConn();
-    public int creerCompteEpargne(CompteEpargne compteEpargne, int idClient) {
+    public int creerCompteEpargne(CompteEpargne compteEpargne, int idClient,int idEmploye) {
         int numeroCompteCourant = -1; // Par défaut, retournez -1 en cas d'échec
         try {
             // Commencez par insérer les informations du compte dans la table "Compte"
-            String compteSql = "INSERT INTO Compte (solde, dateCreation, etat, id_cl) VALUES (?, ?, ?, ?)";
+            String compteSql = "INSERT INTO Compte (solde, dateCreation, etat, id_cl,id_employee) VALUES (?, ?, ?, ?,?)";
             PreparedStatement compteStatement = connection.prepareStatement(compteSql, PreparedStatement.RETURN_GENERATED_KEYS);
             compteStatement.setDouble(1, compteEpargne.getSolde());
             compteStatement.setObject(2, compteEpargne.getDateCreation());
             compteStatement.setString(3, "ACTIF"); // État par défaut
             compteStatement.setInt(4, idClient); // ID du client
+            compteStatement.setInt(5, idEmploye); // ID du employe
 
             int rowsAffected = compteStatement.executeUpdate();
 
