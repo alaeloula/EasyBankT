@@ -11,6 +11,7 @@ import java.util.Optional;
 
 public class ClientImp implements ClientI {
     Connection connection = SingletonConnection.getConn();
+
     @Override
     public Optional<Client> ajouterClient(Client client) {
         Optional<Client> addedClient = Optional.empty();
