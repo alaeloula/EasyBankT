@@ -21,7 +21,6 @@ public class Main {
         // Press Alt+Entrée with your caret at the highlighted text to see how
         // IntelliJ IDEA suggests fixing it.
         new MainPrincipale();
-
     }
     // Méthodes de gestion des employés
 
