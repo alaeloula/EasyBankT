@@ -136,18 +136,8 @@ public class GererComptes {
                             System.out.println("-----------------------");
                             System.out.println("l employee qui a creer le compte");
                             EmployeImp eimp=new EmployeImp();
-                            //employeImp.getEmployeeById(compte.getEmployee().getId());
-                            eimp.getEmployeeById(compte.getEmployee().getId()).ifPresent(employee -> {
-                                // Affichez les détails de l'employé trouvé
-                                System.out.println("Employé trouvé :");
-                                System.out.println("ID : " + employee.getId());
-                                System.out.println("Nom : " + employee.getNom());
-                                System.out.println("Prénom : " + employee.getPrenom());
-                                System.out.println("Date de naissance : " + employee.getDateNaissance());
-                                System.out.println("Téléphone : " + employee.getTel());
-                                System.out.println("Email : " + employee.getEmail());
-                                System.out.println("Date de recrutement : " + employee.getDateRecrutement());
-                            });
+                            Employee e=compte.getEmployee();
+                            System.out.println(e.getNom());
                             System.out.println();
                         }
                     } else {

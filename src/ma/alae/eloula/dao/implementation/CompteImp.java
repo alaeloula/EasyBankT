@@ -172,11 +172,12 @@ public class CompteImp implements Acounte {
 
             while (resultSet.next()) {
                 Compte compte = new Compte();
+                EmployeImp eimp=new EmployeImp();
                 compte.setNumero(resultSet.getInt("numero"));
                 compte.setSolde(resultSet.getDouble("solde"));
                 compte.setDateCreation(resultSet.getDate("dateCreation").toLocalDate());
                 compte.setEtat(Etat.valueOf(resultSet.getString("etat")));
-
+                compte.setEmployee(eimp.findEmployeeById(resultSet.getInt("id_employee")));
                 comptes.add(compte);
             }
 
